@@ -12,7 +12,7 @@ const serverConfig = {
     entry: './src/server/index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'build')
+        path: path.resolve(__dirname, '../build')
     },
     externals: [nodeExternals()]
 }
