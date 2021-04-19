@@ -18,8 +18,8 @@ app.get('/', (req, res) => {
         <div id="root">
             <h1>SSR Demo</h1>
             <p>${content}</p>
-            <script src="/index.js"></script>
         </div>
+        <script src="/index.js"></script>
       </body>
     </html>
       `

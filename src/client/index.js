@@ -1,6 +1,6 @@
 import React from 'react'
-import ReactDom from 'react-dom'
+import ReactDOM from 'react-dom'
 
 import Home from '../container/Home'
 
-ReactDom.render(<Home />, document.getElementById('root'))
+ReactDOM.hydrate(<Home />, document.getElementById('root'))
