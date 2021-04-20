@@ -1,6 +1,6 @@
 const defaultState = {
     name: 'houjinghuan',
-    newsList: []
+    list: []
 }
 
 export default (state = defaultState, action) => {

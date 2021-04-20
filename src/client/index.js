@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import {BrowserRouter, Route} from 'react-router-dom'
 import routes from '../routes'
 import { Provider } from 'react-redux'
-import getStore from '../store'
+import {getClientStore as getStore} from '../store'
 
 const App = () => (
     <Provider store={getStore()}>

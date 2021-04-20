@@ -6,5 +6,7 @@ const reducer = combineReducers({
     home: homeReducer
 })
 
-const getStore = () => createStore(reducer, applyMiddleware(thunk))
-export default getStore
+export const getStore = () => createStore(reducer, applyMiddleware(thunk))
+export const getClientStore = () => {
+    return createStore(reducer, window.initialState, applyMiddleware(thunk))
+}
