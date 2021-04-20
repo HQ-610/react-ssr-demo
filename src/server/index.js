@@ -1,23 +1,47 @@
 import express from 'express'
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {StaticRouter} from 'react-router-dom'
+import {StaticRouter, Route, matchPath} from 'react-router-dom'
 import { Provider } from 'react-redux'
 import getStore from '../store'
-import Routes from '../Routes'
+import routes from '../routes'
 
 const app = express()
 app.use(express.static('public'))
 const port = 3000
 
 app.get('/*', (req, res) => {
-  const content = renderToString(
-    <Provider store={getStore()}>
-      <StaticRouter location={req.path} context={{}}>{Routes}</StaticRouter>
-    </Provider>
-  )
+  const store = getStore()
+  // 根据路由的路径，来加载数据
+  const matchRoutes = []
+  routes.some(route => {
+    // use `matchPath` here
+    const match = matchPath(req.path, route);
+    if (match) matchRoutes.push(route);
+    return match;
+  });
 
-  res.send(
+  const promises = []
+
+  matchRoutes.forEach(item => {
+    if (item.loadData) {
+      promises.push(item.loadData(store))
+    }
+  })
+
+  Promise.all(promises).then(() => {
+    const content = renderToString(
+      <Provider store={store}>
+        <StaticRouter location={req.path} context={{}}>
+          <div>
+            {routes.map(route => (
+              <Route {...route} />
+            ))}
+          </div>
+        </StaticRouter>
+      </Provider>
+    )
+    res.send(
       `<html>
         <head>
           <title>ssr server demo</title>
@@ -28,7 +52,8 @@ app.get('/*', (req, res) => {
         </body>
       </html>
       `
-  )
+    )
+  })
 })
 
 app.listen(port)

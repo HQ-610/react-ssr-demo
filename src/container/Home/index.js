@@ -28,4 +28,8 @@ const Home = props => {
         </div>)
 }
 
+Home.loadData = (store) => {
+    console.log('ssr loadData')
+    return store.dispatch(getList())
+}
 export default Home
