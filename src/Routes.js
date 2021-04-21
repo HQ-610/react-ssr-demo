@@ -2,6 +2,7 @@ import Home from './container/Home'
 import Login from './container/Login'
 import App from './App'
 import NotFound from './container/NotFound'
+import TestRedirect from './container/TestRedirect'
 
 export default [{
     path: '/',
@@ -21,7 +22,12 @@ export default [{
         key: 'login',
       },
       {
-          component: NotFound
+        path: '/301',
+        component: TestRedirect,
+        key: '301',
+      },
+      {
+        component: NotFound
       }
     ]
   }]

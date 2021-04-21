@@ -1,8 +1,8 @@
 import express from 'express'
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {StaticRouter, matchPath} from 'react-router-dom'
-import { renderRoutes } from 'react-router-config';
+import {StaticRouter} from 'react-router-dom'
+import { renderRoutes, matchRoutes } from 'react-router-config';
 import proxy from 'express-http-proxy'
 import { Provider } from 'react-redux'
 import {getStore} from '../store'
@@ -22,19 +22,13 @@ const port = 3000
 app.get('/*', (req, res) => {
   const store = getStore()
   // 根据路由的路径，来加载数据
-  const matchRoutes = []
-  routes.some(route => {
-    // use `matchPath` here
-    const match = matchPath(req.path, route);
-    if (match) matchRoutes.push(route);
-    return match;
-  });
+  const matchedRoutes = matchRoutes(routes, req.path)
 
   const promises = []
 
-  matchRoutes.forEach(item => {
-    if (item.loadData) {
-      promises.push(item.loadData(store))
+  matchedRoutes.forEach(item => {
+    if (item.route.loadData) {
+      promises.push(item.route.loadData(store))
     }
   })
 
@@ -49,24 +43,27 @@ app.get('/*', (req, res) => {
         </StaticRouter>
       </Provider>
     )
-    if(context.notFound) {
+    const html = `
+      <html>
+      <head>
+        <title>ssr server demo</title>
+      </head>
+      <body>
+        <div id="root">${content}</div>
+        <script>
+          window.initialState = ${JSON.stringify(store.getState())}
+        </script>
+        <script src="/index.js"></script>
+      </body>
+    </html>`
+    if (context.action === 'REPLACE'){
+      res.redirect(301, context.url)
+    } else if(context.notFound) {
       res.status(404)
+      res.send(html)
+    } else {
+      res.send(html)
     }
-    res.send(
-      `<html>
-        <head>
-          <title>ssr server demo</title>
-        </head>
-        <body>
-          <div id="root">${content}</div>
-          <script>
-            window.initialState = ${JSON.stringify(store.getState())}
-          </script>
-          <script src="/index.js"></script>
-        </body>
-      </html>
-      `
-    )
   })
 })
 
