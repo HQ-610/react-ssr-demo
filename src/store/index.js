@@ -6,7 +6,8 @@ const reducer = combineReducers({
     home: homeReducer
 })
 
-export const getStore = () => createStore(reducer, applyMiddleware(thunk))
+
+export const getStore = () => createStore(reducer, applyMiddleware(thunk.withExtraArgument('http://test.com/')))
 export const getClientStore = () => {
-    return createStore(reducer, window.initialState, applyMiddleware(thunk))
+    return createStore(reducer, window.initialState, applyMiddleware(thunk.withExtraArgument('/')))
 }

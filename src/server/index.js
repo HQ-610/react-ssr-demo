@@ -1,13 +1,22 @@
 import express from 'express'
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {StaticRouter, Route, matchPath} from 'react-router-dom'
+import {StaticRouter, matchPath} from 'react-router-dom'
+import { renderRoutes } from 'react-router-config';
+import proxy from 'express-http-proxy'
 import { Provider } from 'react-redux'
 import {getStore} from '../store'
 import routes from '../routes'
 
 const app = express()
 app.use(express.static('public'))
+
+app.use('/api', proxy('http://test.com', {
+  proxyReqPathResolver: function(req, res) {
+    return '/api' + req.url
+  }
+}))
+
 const port = 3000
 
 app.get('/*', (req, res) => {
@@ -34,9 +43,7 @@ app.get('/*', (req, res) => {
       <Provider store={store}>
         <StaticRouter location={req.path} context={{}}>
           <div>
-            {routes.map(route => (
-              <Route {...route} />
-            ))}
+            {renderRoutes(routes)}
           </div>
         </StaticRouter>
       </Provider>

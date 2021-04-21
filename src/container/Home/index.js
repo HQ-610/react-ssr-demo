@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import Header from '../../components/Header'
 import {getList} from './store/action'
 
 const Home = props => {
@@ -14,7 +13,6 @@ const Home = props => {
     }, [])
     return (
         <div>
-            <Header />
             Welcom, {name}, Home!
             <button onClick={() => {console.log('test')}}>test</button>
             <ul>
