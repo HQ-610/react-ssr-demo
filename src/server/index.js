@@ -39,15 +39,19 @@ app.get('/*', (req, res) => {
   })
 
   Promise.all(promises).then(() => {
+    const context = {}
     const content = renderToString(
       <Provider store={store}>
-        <StaticRouter location={req.path} context={{}}>
+        <StaticRouter location={req.path} context={context}>
           <div>
             {renderRoutes(routes)}
           </div>
         </StaticRouter>
       </Provider>
     )
+    if(context.notFound) {
+      res.status(404)
+    }
     res.send(
       `<html>
         <head>

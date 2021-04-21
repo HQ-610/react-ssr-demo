@@ -5,6 +5,7 @@ import {getList} from './store/action'
 const Home = props => {
     const name = useSelector(state => state.home.name)
     const list = useSelector(state => state.home.list)
+    const isLogin = useSelector(state => state.header.login)
     const dispatch = useDispatch()
     useEffect(() => {
         if(!list?.length) {
@@ -16,7 +17,7 @@ const Home = props => {
             Welcom, {name}, Home!
             <button onClick={() => {console.log('test')}}>test</button>
             <ul>
-                {list?.map(item => {
+                {isLogin && list?.map(item => {
                     return (
                         <li key={item.id}>
                             {item.title}
